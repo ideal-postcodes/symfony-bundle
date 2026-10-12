@@ -1,0 +1,88 @@
+{
+    "name": "ideal-postcodes/symfony-bundle",
+    "description": "Symfony bundle for the Ideal Postcodes PHP SDK: configure your API key once, inject the client or any resource anywhere",
+    "type": "symfony-bundle",
+    "keywords": [
+        "ideal postcodes",
+        "symfony",
+        "bundle",
+        "address",
+        "postcode",
+        "postcode lookup",
+        "uk"
+    ],
+    "homepage": "https://ideal-postcodes.co.uk",
+    "license": "SEE LICENSE IN LICENSE",
+    "authors": [
+        {
+            "name": "Ideal Postcodes",
+            "email": "support@ideal-postcodes.co.uk",
+            "homepage": "https://ideal-postcodes.co.uk"
+        }
+    ],
+    "support": {
+        "email": "support@ideal-postcodes.co.uk",
+        "docs": "https://docs.ideal-postcodes.co.uk/docs/sdks/php/symfony",
+        "issues": "https://github.com/ideal-postcodes/feedback/issues"
+    },
+    "require": {
+        "php": "^8.2",
+        "ideal-postcodes/sdk": "^0.1",
+        "symfony/config": "^6.4 || ^7.0 || ^8.0",
+        "symfony/dependency-injection": "^6.4 || ^7.0 || ^8.0",
+        "symfony/http-kernel": "^6.4 || ^7.0 || ^8.0"
+    },
+    "require-dev": {
+        "guzzlehttp/guzzle": "^7.9",
+        "laravel/pint": "^1.21",
+        "nyholm/psr7": "^1.8",
+        "pestphp/pest": "^3.8",
+        "php-http/mock-client": "^1.6",
+        "phpstan/phpstan": "^2.1",
+        "symfony/http-client": "^6.4 || ^7.0 || ^8.0"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../php",
+            "options": {
+                "versions": {
+                    "ideal-postcodes/sdk": "0.1.0"
+                }
+            }
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "IdealPostcodes\\Symfony\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "IdealPostcodes\\Symfony\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true
+        }
+    },
+    "scripts": {
+        "lint": "pint --test",
+        "lint:fix": "pint",
+        "test:types": [
+            "phpstan analyse --memory-limit=512M",
+            "phpstan analyse --memory-limit=512M -c phpstan.tests.neon.dist"
+        ],
+        "test:unit": "pest --colors=always",
+        "test": [
+            "@lint",
+            "@test:types",
+            "@test:unit"
+        ]
+    }
+}
