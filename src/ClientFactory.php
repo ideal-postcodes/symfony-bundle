@@ -18,7 +18,7 @@ use Psr\Http\Message\StreamFactoryInterface;
  */
 final class ClientFactory
 {
-    public const VERSION = '0.0.0'; // x-release-please-version
+    public const VERSION = '0.1.0'; // x-release-please-version
 
     /**
      * @param  array<string, scalar|null>  $headers
