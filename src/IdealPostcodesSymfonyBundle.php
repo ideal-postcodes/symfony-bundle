@@ -6,15 +6,6 @@ namespace IdealPostcodes\Symfony;
 
 use IdealPostcodes\Client;
 use IdealPostcodes\Contracts\ClientContract;
-use IdealPostcodes\Resources\Addresses;
-use IdealPostcodes\Resources\Autocomplete;
-use IdealPostcodes\Resources\Configs;
-use IdealPostcodes\Resources\Emails;
-use IdealPostcodes\Resources\Keys;
-use IdealPostcodes\Resources\Licensees;
-use IdealPostcodes\Resources\PhoneNumbers;
-use IdealPostcodes\Resources\Places;
-use IdealPostcodes\Resources\Postcodes;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -28,26 +19,15 @@ use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
 /**
  * Registers an `IdealPostcodes\Client` built from the `ideal_postcodes`
- * configuration, plus one service per resource, all autowirable.
+ * configuration, autowirable as `Client` or `ClientContract`.
+ *
+ * Named for Symfony Flex: without a recipe, Flex registers a bundle only
+ * when its class name is one it derives from the PSR-4 namespace, and for
+ * `IdealPostcodes\Symfony\` that is `IdealPostcodesSymfonyBundle`.
  */
-final class IdealPostcodesBundle extends AbstractBundle
+final class IdealPostcodesSymfonyBundle extends AbstractBundle
 {
     public const CLIENT_SERVICE = 'ideal_postcodes.client';
-
-    /**
-     * Resource services, by service id suffix: `ideal_postcodes.postcodes` and so on.
-     */
-    public const RESOURCES = [
-        'postcodes' => Postcodes::class,
-        'addresses' => Addresses::class,
-        'autocomplete' => Autocomplete::class,
-        'places' => Places::class,
-        'emails' => Emails::class,
-        'phone_numbers' => PhoneNumbers::class,
-        'keys' => Keys::class,
-        'licensees' => Licensees::class,
-        'configs' => Configs::class,
-    ];
 
     protected string $extensionAlias = 'ideal_postcodes';
 
@@ -107,20 +87,5 @@ final class IdealPostcodesBundle extends AbstractBundle
 
         $services->alias(Client::class, self::CLIENT_SERVICE);
         $services->alias(ClientContract::class, self::CLIENT_SERVICE);
-
-        foreach (self::RESOURCES as $name => $class) {
-            $id = 'ideal_postcodes.'.$name;
-            $services->set($id, $class)
-                ->factory([service(self::CLIENT_SERVICE), self::methodFor($name)]);
-            $services->alias($class, $id);
-        }
-    }
-
-    /**
-     * The `Client` method for a resource id: `phone_numbers` is `phoneNumbers()`.
-     */
-    private static function methodFor(string $name): string
-    {
-        return lcfirst(str_replace('_', '', ucwords($name, '_')));
     }
 }

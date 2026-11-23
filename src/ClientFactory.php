@@ -34,8 +34,7 @@ final class ClientFactory
     ): Client {
         $factory = IdealPostcodes::factory()
             ->withApiKey($apiKey)
-            ->withManagementKey($managementKey)
-            ->withHttpHeader('User-Agent', sprintf('ideal-postcodes-symfony-bundle/%s ideal-postcodes-php-sdk/%s', self::VERSION, IdealPostcodes::VERSION));
+            ->withManagementKey($managementKey);
 
         if ($baseUri !== null) {
             $factory->withBaseUri($baseUri);
@@ -53,11 +52,25 @@ final class ClientFactory
             $factory->withStreamFactory($streamFactory);
         }
 
+        // A configured User-Agent names the application. The bundle's
+        // identifier follows it and the SDK appends its own after that.
+        $userAgent = '';
+
         foreach ($headers as $name => $value) {
-            if ($value !== null) {
-                $factory->withHttpHeader($name, (string) $value);
+            if ($value === null) {
+                continue;
             }
+
+            if (strcasecmp($name, 'User-Agent') === 0) {
+                $userAgent = trim((string) $value);
+
+                continue;
+            }
+
+            $factory->withHttpHeader($name, (string) $value);
         }
+
+        $factory->withHttpHeader('User-Agent', ltrim($userAgent.' ideal-postcodes-symfony-bundle/'.self::VERSION));
 
         return $factory->make();
     }
